@@ -1,0 +1,37 @@
+{
+    "name": "payments-details-jdbc-sink-connector",
+    "config": {
+
+        "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+        "task.max": "1",
+        "topics": "money-transfer-data",
+
+        "key.convertor": "io.confluent.connect.avro.AvroConverter",
+        "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "key.converter.schema.registry.url": "http://localhost:8081",
+        "value.converter.schema.registry.url": "http://localhost:8081",
+
+        "transforms": "Flatten,REnameFields",
+        "transforms.Flatten.type": "org.apache.kafka.connect.transforms.Flatten$Value",
+        "transforms.Flatten.delimiter": "_",
+
+        "transforms.RenameFields.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+        "transform.RenameFields.renames": "SENDER_NAME:SENDER_NAME,RECIVER_NAME:BENIFICIARY_NAME,SENDER_ACCT:BENEFICIARY_ACCT,AMOUNT:TRANSFERRED_AMOUNT,SENDER_BANK:SENDER_BANK,RECIVER_BANK:BENIFICIARY_BANK,TXN_ID:TRANSACTION_ID,TXN:DATE:TRANSACTION_DATE",
+
+        "connection.url": "jdbc:postgresql://localhost:5432/reciver",
+        "connection.user": "postgres",
+        "connection.password": "password",
+
+        "insert.mode": "upsert",
+
+        "batch.size": "2",
+
+        "table.name.format": "reciver.transfer_data",
+
+        "pk.mode": "record_value",
+        "pk.fields": "TRANSACTION_ID",
+
+        "db.timezone": "Asia/Kolkata"
+        
+    }
+}
